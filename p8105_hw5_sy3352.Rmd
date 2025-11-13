@@ -98,3 +98,17 @@ estimate_mean_reject_pt = normal_results |>
 estimate_mean_reject_pt
 ```
 
+## Problem 3
+```{r}
+homicides_df = read_csv("data/homicide-data.csv") |> 
+  mutate(location = sprintf("%s, %s", city, state),
+         unsolved = if_else(disposition == "Closed by arrest", 0, 1)) |> 
+  select(location, unsolved) 
+
+homicides_summary = homicides_df |> 
+  group_by(location) |> 
+  summarize(total_homicides = n(),
+            unsolved_homicides = sum(unsolved))
+homicides_summary
+```
+
