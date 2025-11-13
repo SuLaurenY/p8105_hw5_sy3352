@@ -9,6 +9,7 @@ output: github_document
 library(tidyverse)
 library(rvest)
 set.seed(1)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
 ```
 
 ## Problem 1
@@ -133,5 +134,13 @@ all_city_test = homicides_summary |>
 
 all_city_test_tidy = all_city_test |> 
   select(location, unsolved_proportion, estimate, conf.low, conf.high)
+
+all_city_test_pt = all_city_test_tidy |> 
+  ggplot(aes(x = reorder(location, unsolved_proportion), y = estimate)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(x = "City", y = "Estimated proportion of unsolved homicides (95% CI)")
+all_city_test_pt
 ```
 
