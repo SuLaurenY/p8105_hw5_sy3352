@@ -56,5 +56,45 @@ sim_normal_datasets =
   mutate(
     sim_normal_df = map(mean_repeat, each_sample_test)) |> 
   unnest(sim_normal_df)
+
+normal_results = sim_normal_datasets |> 
+  select(mean_repeat, estimate, p.value) |> 
+  mutate(power = if_else(p.value < 0.05, "Reject", "Fail")) 
+
+power_prob = normal_results |> 
+  select(-p.value) |> 
+  group_by(mean_repeat) |> 
+  summarize(estimate_mean = mean(estimate),
+            power_proportion = mean(power == "Reject"))
+
+effect_size_power_pt = power_prob |> 
+  ggplot(aes(x = mean_repeat,
+             y = power_proportion)) + 
+  geom_point() + 
+  scale_x_continuous(breaks = 0:6) +
+  labs(x = "True value of μ", y = "Power of the test")
+effect_size_power_pt
+
+estimate_true_mean_pt = power_prob |> 
+  ggplot(aes(x = mean_repeat,
+             y = estimate_mean)) + 
+  geom_point() + 
+  scale_x_continuous(breaks = 0:6) +
+  scale_y_continuous(breaks = 0:6) +
+  labs(x = "True value of μ", y = "Estimated value of μ")
+estimate_true_mean_pt
+
+estimate_mean_reject_pt = normal_results |> 
+  select(-p.value) |> 
+  filter(power == "Reject") |> 
+  group_by(mean_repeat) |> 
+  summarize(estimate_mean = mean(estimate)) |> 
+  ggplot(aes(x = mean_repeat,
+             y = estimate_mean)) + 
+  geom_point() + 
+  scale_x_continuous(breaks = 0:6) +
+  scale_y_continuous(breaks = 0:6) +
+  labs(x = "True value of μ", y = "Estimated value of μ (when null is rejected)")
+estimate_mean_reject_pt
 ```
 
