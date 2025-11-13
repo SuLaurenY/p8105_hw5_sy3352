@@ -112,3 +112,14 @@ homicides_summary = homicides_df |>
 homicides_summary
 ```
 
+```{r}
+baltimore_test = homicides_df |> 
+  filter(location == "Baltimore, MD") 
+baltimore_result = broom::tidy(
+    prop.test(x = sum(baltimore_test$unsolved), n = nrow(baltimore_test), 
+              conf.level = 0.95, correct = TRUE))
+baltimore_result |> pull(estimate) 
+baltimore_result |> pull(conf.low) 
+baltimore_result |> pull(conf.high) 
+```
+
