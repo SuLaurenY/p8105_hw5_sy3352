@@ -13,7 +13,6 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 ```
 
 ## Problem 1
-
 ```{r}
 same_bday = function(n) {
   generated_bday = sample(1:365, n, replace = TRUE)
@@ -40,6 +39,7 @@ same_bday_prob_pt = same_bday_prob |>
   geom_line()
 same_bday_prob_pt
 ```
+From the plot and the simulated birthday data, we can see that the as sample size get bigger, the probability to have same birthday in the group also get bigger at the same time. As sample size gets close to 50, the probability of having same birthday in the group gets very close to 1, which means we can almost be certain that there will be two person having the same birthday once the group is bigger than 50.
 
 ## Problem 2
 ```{r}
@@ -72,14 +72,19 @@ effect_size_power_pt = power_prob |>
   ggplot(aes(x = mean_repeat,
              y = power_proportion)) + 
   geom_point() + 
+  geom_line() +
   scale_x_continuous(breaks = 0:6) +
   labs(x = "True value of μ", y = "Power of the test")
 effect_size_power_pt
+```
+From the plot above, we can see that as the true value of μ gets bigger, the power (proportion of times the null was rejected) drastically increased and slowed down when μ is bigger than 3. When μ reaches 4, the power get almost 1 and stays. Such observation implies that at significance level 0.05, we have higher probability to reject H0 with bigger true μ. 
 
+```{r}
 estimate_true_mean_pt = power_prob |> 
   ggplot(aes(x = mean_repeat,
              y = estimate_mean)) + 
   geom_point() + 
+  geom_line() +
   scale_x_continuous(breaks = 0:6) +
   scale_y_continuous(breaks = 0:6) +
   labs(x = "True value of μ", y = "Estimated value of μ")
@@ -93,11 +98,13 @@ estimate_mean_reject_pt = normal_results |>
   ggplot(aes(x = mean_repeat,
              y = estimate_mean)) + 
   geom_point() + 
+  geom_line() +
   scale_x_continuous(breaks = 0:6) +
   scale_y_continuous(breaks = 0:6) +
   labs(x = "True value of μ", y = "Estimated value of μ (when null is rejected)")
 estimate_mean_reject_pt
 ```
+From the plots, we can see that the estimated mean is almost the same as the true value of mean for all values in our simulation. When looking at the estimated value of mean only in the samples for which the null was rejected, the estimated mean is higher than the true value of mean from 0 to 3, and then get almost the same starting from 4. This is because when power is low, only the extreme cases are selected for our plot, thus over-estimating the mean. 
 
 ## Problem 3
 ```{r}
@@ -112,6 +119,7 @@ homicides_summary = homicides_df |>
             unsolved_homicides = sum(unsolved))
 homicides_summary
 ```
+The homicide raw data contains `r nrow(homicides_df)` rows of data, which covered the homicide cases from 2007 to 2017 in 50 US cities. Each row represents a homicide case. Some of the key variables are `reported_date`, `victim_race`, `victim_age`, `victim_sex`, `city`, `state`, `disposition`. There are 3 different dispositions: `Open/No arrest`, `Closed by arrest`, `Closed without arrest`.
 
 ```{r}
 baltimore_test = homicides_df |> 
